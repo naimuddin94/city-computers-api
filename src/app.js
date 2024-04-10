@@ -10,6 +10,7 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
+import { globalErrorHandler } from './utils/globalErrorHandler.js';
 
 const app = express();
 
@@ -28,5 +29,17 @@ app.use(cors({
 app.get('/', (req, res) => { 
     res.send('🛩️ Server is running...')
 });
+
+// handle not found routes
+app.get('*', (req, res, next) => { 
+    const error = new Error(
+      `Can't find route ${req.originalUrl} on the server`
+    );
+    error.status = 404;
+    next(error);
+})
+
+// error handling middleware
+app.use(globalErrorHandler);
 
 export default app;
