@@ -11,7 +11,7 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
-import { globalErrorHandler } from './utils/globalErrorHandler.js';
+import { globalErrorHandler } from './utils/index.js';
 
 const app = express();
 
