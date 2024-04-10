@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
  * Title: City Computers
  * Description: A Ecommerce Application API
@@ -17,27 +18,26 @@ const app = express();
 // middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    origin: ['http://localhost:3000'],
-    withCredentials: true,
-}))
+app.use(
+    cors({
+        origin: ['http://localhost:3000'],
+        withCredentials: true,
+    }),
+);
 
 // routes
 
-
 // test routes
-app.get('/', (req, res) => { 
-    res.send('🛩️ Server is running...')
+app.get('/', (req, res) => {
+    res.send('🛩️ Server is running...');
 });
 
 // handle not found routes
-app.get('*', (req, res, next) => { 
-    const error = new Error(
-      `Can't find route ${req.originalUrl} on the server`
-    );
+app.get('*', (req, res, next) => {
+    const error = new Error(`Can't find route ${req.originalUrl} on the server`);
     error.status = 404;
     next(error);
-})
+});
 
 // error handling middleware
 app.use(globalErrorHandler);
