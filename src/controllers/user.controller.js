@@ -1,20 +1,22 @@
 /* eslint-disable prettier/prettier */
+// dependencies
+import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import {
-    ApiError,
-    ApiResponse,
-    asyncHandler,
-    fileUploadOnCloudinary,
-    options,
+  ApiError,
+  ApiResponse,
+  asyncHandler,
+  fileUploadOnCloudinary,
+  options,
 } from '../utils/index.js';
 
 // generate access and refresh tokens
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
-      const user = await User.findById(userId);
-      if (!user) {
-           throw new ApiError(404, 'User not found');
-      }
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ApiError(404, 'User not found');
+    }
 
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
@@ -103,4 +105,124 @@ const loginUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, 'Login successfully'));
 });
 
-export { loginUser, registerUser };
+// user logout functionality
+const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $unset: {
+        refreshToken: 1, // this removes the field from document
+      },
+    },
+    { new: true },
+  );
+
+  return res
+    .status(200)
+    .clearCookie('accessToken', options)
+    .clearCookie('refreshToken', options)
+    .json(new ApiResponse(200, {}, 'User logged Out'));
+});
+
+// refresh token
+const userRefreshToken = asyncHandler(async (req, res) => {
+  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, 'unauthorized request');
+  }
+
+  try {
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+    );
+    const user = await User.findById(decodedToken?._id);
+
+    if (!user) {
+      throw new ApiError(401, 'Invalid refresh token');
+    }
+
+    if (incomingRefreshToken !== user?.refreshToken) {
+      throw new ApiError(401, 'Refresh token is expired or used');
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      user._id,
+    );
+
+    return res
+      .status(200)
+      .cookie('accessToken', accessToken, options)
+      .cookie('refreshToken', refreshToken, options)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken },
+          'Access token refreshed',
+        ),
+      );
+  } catch (error) {
+    throw new ApiError(401, error?.message || 'Invalid refresh token');
+  }
+});
+
+// update user password
+const updatePassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+
+  const user = await User.findById(req?.user?._id);
+
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+
+  if (!isPasswordCorrect) {
+    throw new ApiError(400, 'Invalid old password');
+  }
+
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, 'Password changed successfully'));
+});
+
+// update user avatar
+const updateImage = asyncHandler(async (req, res) => {
+  let image;
+
+  if (req.file && req.file?.mimetype?.includes('image/') && req.file?.buffer) {
+    image = await fileUploadOnCloudinary(req.file?.buffer);
+  }
+
+  if (!image) {
+    throw new ApiError(400, 'Image file required');
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        image,
+      },
+    },
+    { new: true },
+  ).select('-password -refreshToken');
+
+  if (!user) {
+    throw new ApiError(500, 'Something went wrong while updating avatar');
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, 'Avatar image updated successfully'));
+});
+
+export {
+  loginUser,
+  logoutUser,
+  registerUser,
+  updateImage,
+  updatePassword,
+  userRefreshToken,
+};
