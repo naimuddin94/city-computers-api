@@ -1,8 +1,9 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "A Backend Application For A Eccomerce Shop ",
+  "description": "A Backend Application For A Ecommerce Shop ",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
