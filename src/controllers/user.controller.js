@@ -11,7 +11,11 @@ import {
 // generate access and refresh tokens
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
-    const user = await User.findById(userId);
+      const user = await User.findById(userId);
+      if (!user) {
+           throw new ApiError(404, 'User not found');
+      }
+
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
