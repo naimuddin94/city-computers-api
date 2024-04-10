@@ -11,6 +11,7 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
+import userRouter from './routes/user.routes.js';
 import { globalErrorHandler } from './utils/index.js';
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(
 );
 
 // routes
+app.use('/api/v1/users', userRouter);
 
 // test routes
 app.get('/', (req, res) => {
