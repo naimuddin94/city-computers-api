@@ -6,6 +6,7 @@ const brandSchema = new Schema(
         name: {
             type: String,
             required: true,
+            unique: true,
         },
         origin: {
             type: String,

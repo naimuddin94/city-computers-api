@@ -21,4 +21,21 @@ const createBrand = asyncHandler(async (req, res) => {
     return res.status(201).json(new ApiResponse(201, brand, 'Brand created successfully'));
 });
 
-export { createBrand };
+// remove the brand from the database
+const deleteBrand = asyncHandler(async (req, res) => {
+    const { brandId } = req.params;
+
+    if (!brandId) {
+        throw new ApiError(400, 'Brand id is required');
+    }
+
+    const result = await Brand.findByIdAndDelete(brandId);
+
+    if (!result) {
+        throw new ApiError(500, 'Something went wrong while deleting the brand from the database');
+    }
+
+    return res.status(200).json(new ApiResponse(200, result, 'Brand deleted successfully'));
+});
+
+export { createBrand, deleteBrand };
