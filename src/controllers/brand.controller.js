@@ -38,4 +38,15 @@ const deleteBrand = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, result, 'Brand deleted successfully'));
 });
 
-export { createBrand, deleteBrand };
+// get all the brand
+const getAllBrand = asyncHandler(async (req, res) => {
+    const brands = await Brand.find({});
+
+    if (!brands) {
+        throw new ApiError(500, 'Something went wrong when fetching brand list');
+    }
+
+    return res.status(200).json(new ApiResponse(200, brands, 'Brand fetched successfully'));
+});
+
+export { createBrand, deleteBrand, getAllBrand };
