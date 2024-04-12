@@ -9,9 +9,6 @@ const categorySchema = new Schema(
       unique: true,
     },
   },
-  {
-    timestamps: true,
-  },
 );
 
 const Category = model('Category', categorySchema);

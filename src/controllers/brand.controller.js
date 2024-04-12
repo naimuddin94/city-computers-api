@@ -5,13 +5,13 @@ import { ApiError, ApiResponse, asyncHandler } from '../utils/index.js';
 const createBrand = asyncHandler(async (req, res) => {
     const { name, origin } = req.body;
 
-    if (!name || !origin) {
+    if (!name.trim() || !origin.trim()) {
         throw new ApiError(400, 'Required fields missing');
     }
 
     const brand = await Brand.create({
-        name,
-        origin,
+        name: name.trim(),
+        origin: origin.trim(),
     });
 
     if (!brand) {

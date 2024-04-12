@@ -14,6 +14,7 @@ import express from 'express';
 import brandRouter from './routes/brand.routes.js';
 import userRouter from './routes/user.routes.js';
 import { globalErrorHandler } from './utils/index.js';
+import categoryRouter from './routes/category.routes.js';
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(
 // routes
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/brands', brandRouter);
+app.use('/api/v1/categories', categoryRouter);
 
 // test routes
 app.get('/', (req, res) => {
