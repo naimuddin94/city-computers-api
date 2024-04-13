@@ -15,6 +15,7 @@ import brandRouter from './routes/brand.routes.js';
 import categoryRouter from './routes/category.routes.js';
 import productRouter from './routes/product.routes.js';
 import subCategoryRouter from './routes/subCategory.routes.js';
+import supplierRouter from './routes/supplier.routes.js';
 import userRouter from './routes/user.routes.js';
 import { globalErrorHandler } from './utils/index.js';
 
@@ -36,6 +37,7 @@ app.use('/api/v1/brands', brandRouter);
 app.use('/api/v1/categories', categoryRouter);
 app.use('/api/v1/sub-categories', subCategoryRouter);
 app.use('/api/v1/products', productRouter);
+app.use('/api/v1/suppliers', supplierRouter);
 
 // test routes
 app.get('/', (req, res) => {
