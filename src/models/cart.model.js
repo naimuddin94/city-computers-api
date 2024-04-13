@@ -8,6 +8,14 @@ const cartSchema = new Schema(
       ref: 'User',
       required: true,
     },
+    address: {
+      type: String,
+      required: true,
+    },
+    mobile: {
+      type: String,
+      required: true,
+    },
     items: [
       {
         product: {

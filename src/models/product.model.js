@@ -12,9 +12,9 @@ const productSchema = new Schema(
       type: [String],
       required: true,
     },
-    category: {
+    subCategory: {
       type: Schema.Types.ObjectId,
-      ref: 'Category',
+      ref: 'SubCategory',
       required: true,
     },
     brand: {

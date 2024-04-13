@@ -16,11 +16,6 @@ const supplierSchema = new Schema(
       type: String,
       required: true,
     },
-    products: {
-      type: [Schema.Types.ObjectId],
-      ref: 'Product',
-      required: true,
-    },
   },
   { timestamps: true },
 );
