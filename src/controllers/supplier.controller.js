@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 import Supplier from '../models/supplier.model.js';
 import { ApiError, ApiResponse, asyncHandler } from '../utils/index.js';
 
@@ -16,6 +17,23 @@ const createSupplier = asyncHandler(async (req, res) => {
     }
 
     return res.status(201).json(new ApiResponse(201, supplier, 'Supplier created successfully'));
+});
+
+// get single supplier
+const getSingleSupplier = asyncHandler(async (req, res) => {
+    const { supplierId } = req.params;
+
+    if (!supplierId) {
+        throw new ApiError(400, 'Supplier id is required');
+    }
+
+    const result = await Supplier.findById(supplierId);
+
+    if (!result) {
+        throw new ApiError(404, 'Supplier not found');
+    }
+
+    return res.status(200).json(new ApiResponse(200, result, 'Supplier fetched successfully'));
 });
 
 // fetched all suppliers from the database
@@ -46,4 +64,4 @@ const deleteSupplier = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, result, 'Supplier deleted successfully'));
 });
 
-export { createSupplier, deleteSupplier, getAllSuppliers };
+export { createSupplier, deleteSupplier, getAllSuppliers, getSingleSupplier };
