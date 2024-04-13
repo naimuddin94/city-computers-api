@@ -57,4 +57,26 @@ const getAllSubCategory = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, subCategories, 'Sub category fetched successfully'));
 });
 
-export { createSubCategory, deleteSubCategory, getAllSubCategory };
+// get sub categories by category id
+const getSubCategoriesByCategory = asyncHandler(async (req, res) => {
+    const { categoryId } = req.params;
+
+    if (!categoryId) {
+        throw new ApiError(400, 'Category id is required');
+    }
+
+    const subCategories = await SubCategory.find({ category: categoryId });
+
+    if (!subCategories) {
+        throw new ApiError(404, 'Sub Category not found');
+    }
+
+    return res.status(200).json(new ApiResponse(200, subCategories, 'Sub categories fetched successfully'));
+});
+
+export {
+    createSubCategory,
+    deleteSubCategory,
+    getAllSubCategory,
+    getSubCategoriesByCategory,
+};

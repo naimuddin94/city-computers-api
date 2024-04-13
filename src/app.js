@@ -12,9 +12,10 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import brandRouter from './routes/brand.routes.js';
+import categoryRouter from './routes/category.routes.js';
+import subCategoryRouter from './routes/subCategory.routes.js';
 import userRouter from './routes/user.routes.js';
 import { globalErrorHandler } from './utils/index.js';
-import categoryRouter from './routes/category.routes.js';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/brands', brandRouter);
 app.use('/api/v1/categories', categoryRouter);
+app.use('/api/v1/sub-categories', subCategoryRouter);
 
 // test routes
 app.get('/', (req, res) => {
