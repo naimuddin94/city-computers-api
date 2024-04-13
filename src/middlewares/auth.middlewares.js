@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
 import { ApiError, asyncHandler } from '../utils/index.js';
 
+// verify JWT token with secret key
 const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
     const token = req.cookies?.accessToken
@@ -30,4 +31,20 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
   }
 });
 
-export { verifyJWT };
+// verify admin
+const verifyAdmin = asyncHandler(async (req, res, next) => {
+  if (req.user?.role !== 'admin') {
+    throw new ApiError(401, 'Unauthorized access');
+  }
+  next();
+});
+
+// verify manager
+const verifyManager = asyncHandler(async (req, res, next) => {
+  if (req.user?.role !== 'admin' && req.user?.role !== 'manager') {
+    throw new ApiError(401, 'Unauthorized access');
+  }
+  next();
+});
+
+export { verifyAdmin, verifyJWT, verifyManager };
