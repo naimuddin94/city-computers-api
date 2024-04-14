@@ -253,11 +253,73 @@ const updateProductApproval = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, result, 'Approval status updated successfully'));
 });
 
+// updateProduct without image
+const updateProduct = asyncHandler(async (req, res) => {
+  const {
+    name,
+    subCategory,
+    brand,
+    price,
+    offerPrice,
+    purchasePrice,
+    stocks,
+    features,
+    description,
+    supplier,
+  } = req.body;
+
+  if (
+    !(
+      name?.trim() &&
+      subCategory?.trim() &&
+      brand?.trim() &&
+      price &&
+      purchasePrice &&
+      features &&
+      description?.trim() &&
+      supplier?.trim()
+    )
+  ) {
+    throw new ApiError(400, 'Required fields missing');
+  }
+
+  const { productId } = req.params;
+
+  const result = await Product.findByIdAndUpdate(
+    productId,
+    {
+      name,
+      subCategory,
+      brand,
+      price,
+      offerPrice,
+      purchasePrice,
+      stocks,
+      features,
+      description,
+      supplier,
+    },
+    { new: true }
+  );
+
+  if (!result) {
+    throw new ApiError(
+      500,
+      'Something went wrong updating the product approval'
+    );
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, 'Product updated successfully'));
+});
+
 export {
   createProduct,
   deleteProduct,
   getAllProducts,
-  getSingleProduct, updateProductApproval, updateProductImages,
+  getSingleProduct, updateProduct, updateProductApproval,
+  updateProductImages,
   updateProductOfferPrice,
-  updateProductStock
+  updateProductStock,
 };
