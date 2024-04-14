@@ -46,8 +46,8 @@ const createProduct = asyncHandler(async (req, res) => {
     req.files[0]?.mimetype?.includes('image/') &&
     req.files[0]?.buffer
   ) {
-      const imageOne = await await fileUploadOnCloudinary(req.files[0]?.buffer);
-      if (imageOne) images.push(imageOne);
+    const imageOne = await await fileUploadOnCloudinary(req.files[0]?.buffer);
+    if (imageOne) images.push(imageOne);
   }
 
   if (
@@ -55,8 +55,8 @@ const createProduct = asyncHandler(async (req, res) => {
     req.files[1]?.mimetype?.includes('image/') &&
     req.files[1]?.buffer
   ) {
-      const imageTwo = await await fileUploadOnCloudinary(req.files[1]?.buffer);
-      if (imageTwo) images.push(imageTwo);
+    const imageTwo = await await fileUploadOnCloudinary(req.files[1]?.buffer);
+    if (imageTwo) images.push(imageTwo);
   }
 
   if (
@@ -64,28 +64,31 @@ const createProduct = asyncHandler(async (req, res) => {
     req.files[2]?.mimetype?.includes('image/') &&
     req.files[2]?.buffer
   ) {
-      const imageThree = await await fileUploadOnCloudinary(req.files[2]?.buffer);
-      if (imageThree) images.push(imageThree);
+    const imageThree = await await fileUploadOnCloudinary(req.files[2]?.buffer);
+    if (imageThree) images.push(imageThree);
   }
 
-    const product = await Product.create({
-      name,
-      images,
-      subCategory,
-      brand,
-      price,
-      offerPrice,
-      purchasePrice,
-      stocks,
-      features,
-      description,
-      addedBy: req.user?._id,
-      supplier,
-    });
+  const product = await Product.create({
+    name,
+    images,
+    subCategory,
+    brand,
+    price,
+    offerPrice,
+    purchasePrice,
+    stocks,
+    features,
+    description,
+    addedBy: req.user?._id,
+    supplier,
+  });
 
-    if (!product) {
-        throw new ApiError(500, 'Something went wrong while creating product to the database');
-    }
+  if (!product) {
+    throw new ApiError(
+      500,
+      'Something went wrong while creating product to the database'
+    );
+  }
 
   return res
     .status(201)
@@ -119,7 +122,9 @@ const getAllProducts = asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Product not found');
   }
 
-  return res.status(200).json(new ApiResponse(200, products, 'Product fetched successfully'));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, products, 'Product fetched successfully'));
 });
 
 // remove product from the database
@@ -174,15 +179,24 @@ const updateProductImages = asyncHandler(async (req, res) => {
     if (imageThree) images.push(imageThree);
   }
 
-  const result = await Product.findByIdAndUpdate(productId, {
-    images,
-  }, { new: true });
+  const result = await Product.findByIdAndUpdate(
+    productId,
+    {
+      images,
+    },
+    { new: true }
+  );
 
   if (!result) {
-    throw new ApiError(500, 'Something went wrong when updating product images');
+    throw new ApiError(
+      500,
+      'Something went wrong when updating product images'
+    );
   }
 
-  return res.status(200).json(new ApiResponse(200, result, 'Product images updated successfully'));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, 'Product images updated successfully'));
 });
 
 // update product offer price
@@ -198,13 +212,19 @@ const updateProductOfferPrice = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Offer price is required');
   }
 
-  const result = await Product.findByIdAndUpdate(productId, { offerPrice }, { new: true });
+  const result = await Product.findByIdAndUpdate(
+    productId,
+    { offerPrice },
+    { new: true }
+  );
 
   if (!result) {
     throw new ApiError(500, 'Something went wrong while updating offer price');
   }
 
-  return res.status(200).json(new ApiResponse(200, result, 'Offer price updated'));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, 'Offer price updated'));
 });
 
 // update product stock
@@ -220,13 +240,19 @@ const updateProductStock = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Product stock required');
   }
 
-  const result = await Product.findByIdAndUpdate(productId, { stocks }, { new: true });
+  const result = await Product.findByIdAndUpdate(
+    productId,
+    { stocks },
+    { new: true }
+  );
 
   if (!result) {
     throw new ApiError(500, 'Something went wrong updating the product stocks');
   }
 
-  return res.status(200).json(new ApiResponse(200, result, 'Stock updated successfully'));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, result, 'Stock updated successfully'));
 });
 
 // update product approval status by admin
@@ -242,10 +268,17 @@ const updateProductApproval = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Product stock required');
   }
 
-  const result = await Product.findByIdAndUpdate(productId, { approved }, { new: true });
+  const result = await Product.findByIdAndUpdate(
+    productId,
+    { approved },
+    { new: true }
+  );
 
   if (!result) {
-    throw new ApiError(500, 'Something went wrong updating the product approval');
+    throw new ApiError(
+      500,
+      'Something went wrong updating the product approval'
+    );
   }
 
   return res
@@ -254,7 +287,7 @@ const updateProductApproval = asyncHandler(async (req, res) => {
 });
 
 // updateProduct without image
-const updateProduct = asyncHandler(async (req, res) => {
+const updateProductWithoutImages = asyncHandler(async (req, res) => {
   const {
     name,
     subCategory,
@@ -318,8 +351,10 @@ export {
   createProduct,
   deleteProduct,
   getAllProducts,
-  getSingleProduct, updateProduct, updateProductApproval,
+  getSingleProduct,
+  updateProductApproval,
   updateProductImages,
   updateProductOfferPrice,
   updateProductStock,
+  updateProductWithoutImages
 };
