@@ -301,21 +301,6 @@ const updateProductWithoutImages = asyncHandler(async (req, res) => {
     supplier,
   } = req.body;
 
-  if (
-    !(
-      name?.trim() &&
-      subCategory?.trim() &&
-      brand?.trim() &&
-      price &&
-      purchasePrice &&
-      features &&
-      description?.trim() &&
-      supplier?.trim()
-    )
-  ) {
-    throw new ApiError(400, 'Required fields missing');
-  }
-
   const { productId } = req.params;
 
   const result = await Product.findByIdAndUpdate(
